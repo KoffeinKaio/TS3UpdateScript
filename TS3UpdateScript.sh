@@ -63,21 +63,23 @@ echo -e "------------------------------------------------------------------\n";
 SCRIPT_NAME="$(basename $0)"
 SCRIPT_PATH="$(dirname $0)"
 
+function checkRoot() {
 # Make sure, that the user has root permissions
-if [[ "$EUID" != 0 ]]; then
-	# Get absolute path of script
+if [[ "$euid" != 0 ]]; then
+	# get absolute path of script
 	cd "$(dirname $0)"
-	SCRIPT="$(pwd)/$(basename $0)"
+	script="$(pwd)/$(basename $0)"
 	cd - > /dev/null
 
-	# Start script with root permissions - after correct password input
-	echo -en "${SCurs}This script needs root permissions. Please enter your root password...";
-	echo -e "${RCurs}${MCurs}[ ${Red}HINT ${RCol}]";
+	# start script with root permissions - after correct password input
+	echo -en "${scurs}this script needs root permissions. please enter your root password...";
+	echo -e "${rcurs}${mcurs}[ ${red}hint ${rcol}]";
 
-	su -c "$SCRIPT $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
+	su -c "$script $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
 
 	exit 0
 fi
+}
 
 # If no option is set, show the usage message
 if [ "$1" = "" ]; then
@@ -582,6 +584,7 @@ fi
 
 # If option '--autoupdate yes' is set, install the cronjob for monday at 3 AM
 if [ "$AUTO_UPDATE_PARAMETER" == "yes" ]; then
+	checkRoot;
 	echo -en "${SCurs}Installing new cronjob in '${CROND_PATH_FILE}'";
 	echo -e "${RCurs}${MCurs}[ ${Whi}.. ${RCol}]";
 
@@ -663,6 +666,7 @@ fi
 
 # If option '--autoupdate no' is set, deinstall the cronjob of monday at 3 AM
 if [ "$AUTO_UPDATE_PARAMETER" == "no" ]; then
+	checkRoot;
 	echo -en "${SCurs}Deinstalling cronjob";
 	echo -e "${RCurs}${MCurs}[ ${Whi}.. ${RCol}]";
 
